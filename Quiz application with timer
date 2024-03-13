@@ -1,0 +1,62 @@
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class QuizGame {
+    private static final int QUESTION_TIMEOUT = 30; // Timeout for each question in seconds
+    private static int score = 0;
+    private static int questionIndex = 0;
+    private static String[][] questions = {
+            {"What is the capital of France?", "A. Paris", "B. London", "C. Rome", "D. Berlin", "A"},
+            {"What is the powerhouse of the cell?", "A. Nucleus", "B. Mitochondria", "C. Ribosome", "D. Endoplasmic reticulum", "B"},
+            {"Who wrote 'Romeo and Juliet'?", "A. William Shakespeare", "B. Jane Austen", "C. Charles Dickens", "D. Leo Tolstoy", "A"}
+    };
+
+    public static void main(String[] args) {
+        startQuiz();
+    }
+
+    private static void startQuiz() {
+        System.out.println("Welcome to the Quiz Game!");
+        System.out.println("You will have " + QUESTION_TIMEOUT + " seconds to answer each question.");
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("\nTime's up!");
+                showResult();
+                System.exit(0);
+            }
+        }, QUESTION_TIMEOUT * 1000);
+
+        askQuestion();
+    }
+
+    private static void askQuestion() {
+        if (questionIndex < questions.length) {
+            String[] currentQuestion = questions[questionIndex];
+            System.out.println("\nQuestion " + (questionIndex + 1) + ": " + currentQuestion[0]);
+            for (int i = 1; i < currentQuestion.length - 1; i++) {
+                System.out.println(currentQuestion[i]);
+            }
+            System.out.print("Your answer: ");
+            Scanner scanner = new Scanner(System.in);
+            String userAnswer = scanner.nextLine().trim().toUpperCase();
+            if (userAnswer.equals(currentQuestion[currentQuestion.length - 1])) {
+                System.out.println("Correct!");
+                score++;
+            } else {
+                System.out.println("Incorrect! The correct answer is: " + currentQuestion[currentQuestion.length - 1]);
+            }
+            questionIndex++;
+            askQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    private static void showResult() {
+        System.out.println("\nQuiz ended!");
+        System.out.println("Your final score is: " + score + "/" + questions.length);
+    }
+}
